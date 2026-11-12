@@ -1,0 +1,96 @@
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  use-system-hosts: true
+
+  # 用于解析 DoH 服务器自身域名
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+
+  # 专门解析代理节点地址，避免必须先连接代理才能解析代理节点
+  proxy-server-nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+
+  # 非中国大陆域名使用境外 DoH，并强制经过 PROXY
+  nameserver:
+    - "https://dns.google/dns-query#PROXY"
+    - "https://cloudflare-dns.com/dns-query#PROXY"
+
+  # 私有域名使用系统 DNS，中国大陆域名使用国内 DoH
+  nameserver-policy:
+    "rule-set:private-domain":
+      - system
+    "rule-set:cn-domain":
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+
+  # DIRECT 连接使用的 DNS
+  direct-nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  direct-nameserver-follow-policy: true
+
+  fake-ip-filter:
+    - "*.lan"
+    - "*.local"
+    - "localhost"
+    - "time.*.com"
+    - "ntp.*.com"
+
+rule-providers:
+  private-domain:
+    type: http
+    behavior: domain
+    format: mrs
+    path: ./ruleset/private-domain.mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs
+    interval: 86400
+    proxy: PROXY
+
+  private-ip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    path: ./ruleset/private-ip.mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs
+    interval: 86400
+    proxy: PROXY
+
+  cn-domain:
+    type: http
+    behavior: domain
+    format: mrs
+    path: ./ruleset/cn-domain.mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs
+    interval: 86400
+    proxy: PROXY
+
+  cn-ip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    path: ./ruleset/cn-ip.mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs
+    interval: 86400
+    proxy: PROXY
+
+rules:
+  # 防止连接 VPS/SSH 时再次进入同一台 VPS 的代理
+  - IP-CIDR,195.72.189.200/32,DIRECT,no-resolve
+  - DOMAIN,xui.yulaex.com,DIRECT
+
+  # 局域网和私有地址直连
+  - RULE-SET,private-domain,DIRECT
+  - RULE-SET,private-ip,DIRECT,no-resolve
+
+  # 中国大陆域名和 IP 直连
+  - RULE-SET,cn-domain,DIRECT
+  - RULE-SET,cn-ip,DIRECT,no-resolve
+
+  # 其余流量走代理
+  - MATCH,PROXY
