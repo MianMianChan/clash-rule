@@ -37,10 +37,19 @@ dns:
 
   fake-ip-filter:
     - "*.lan"
+    - "+.home.arpa"
     - "*.local"
     - "localhost"
     - "time.*.com"
+    - "time.*.gov"
     - "ntp.*.com"
+    - "+.pool.ntp.org"
+    - "*.msftconnecttest.com"
+    - "*.msftncsi.com"
+    - "captive.apple.com"
+    - "connectivitycheck.gstatic.com"
+    - "+.stun.*.*"
+    - "+.stun.*.*.*"
 
 rule-providers:
   private-domain:
@@ -80,9 +89,8 @@ rule-providers:
     proxy: PROXY
 
 rules:
-  # 防止连接 VPS/SSH 时再次进入同一台 VPS 的代理
-  # - IP-CIDR,195.72.189.200/32,DIRECT,no-resolve
-  - DOMAIN,xui.yulaex.com,DIRECT
+  - IP-CIDR,104.233.159.219/32,DIRECT,no-resolve
+  - IP-CIDR,144.225.33.211/32,DIRECT,no-resolve
 
   # 局域网和私有地址直连
   - RULE-SET,private-domain,DIRECT
