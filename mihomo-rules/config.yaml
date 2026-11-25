@@ -91,6 +91,9 @@ rule-providers:
 rules:
   - IP-CIDR,104.233.159.219/32,DIRECT,no-resolve
   - IP-CIDR,144.225.33.211/32,DIRECT,no-resolve
+  - DOMAIN-SUFFIX,anker-in.com,DIRECT
+  - DOMAIN-SUFFIX,anker-launch.com,DIRECT
+  - DOMAIN-SUFFIX,chinalin.com,DIRECT
 
   # 局域网和私有地址直连
   - RULE-SET,private-domain,DIRECT
