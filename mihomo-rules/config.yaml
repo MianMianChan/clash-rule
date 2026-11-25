@@ -94,6 +94,8 @@ rules:
   - DOMAIN-SUFFIX,anker-in.com,DIRECT
   - DOMAIN-SUFFIX,anker-launch.com,DIRECT
   - DOMAIN-SUFFIX,chinalin.com,DIRECT
+  - DOMAIN-SUFFIX,yulaex.com,DIRECT
+  - DOMAIN-SUFFIX,yulae.space,DIRECT
 
   # 局域网和私有地址直连
   - RULE-SET,private-domain,DIRECT
