@@ -21,8 +21,15 @@ dns:
     - "https://dns.google/dns-query#PROXY"
     - "https://cloudflare-dns.com/dns-query#PROXY"
 
+  # 企业内网域名使用系统 DNS（由 AnkerLink 下发的企业 DNS 解析）
   # 私有域名使用系统 DNS，中国大陆域名使用国内 DoH
   nameserver-policy:
+    "+.anker-in.com":
+      - system
+    "+.anker-launch.com":
+      - system
+    "+.chinalin.com":
+      - system
     "rule-set:private-domain":
       - system
     "rule-set:cn-domain":
@@ -50,6 +57,10 @@ dns:
     - "connectivitycheck.gstatic.com"
     - "+.stun.*.*"
     - "+.stun.*.*.*"
+    # 企业内网域名不使用 fake-ip，拿真实 IP 才能走企业 VPN
+    - "+.anker-in.com"
+    - "+.anker-launch.com"
+    - "+.chinalin.com"
 
 rule-providers:
   private-domain:
